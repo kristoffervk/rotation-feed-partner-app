@@ -1,0 +1,10 @@
+# Shopify CLI's local state (which app and store this folder is linked to)
+.shopify/
+node_modules/
+.env
+.env.*
+# never commit app secrets or notes with them
+*.secret
+*secret*.txt
+.DS_Store
+Thumbs.db

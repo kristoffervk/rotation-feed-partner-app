@@ -1,0 +1,32 @@
+# Rotation Feed: the app that brings Rotation's products and stock into YOUR Shopify store.
+# This is a configuration-only Shopify app: there is no program code here. Shopify reads this file when you run
+# `shopify app deploy`; the app itself runs on Rotation's server at bridge.rotationfootwear.com.
+#
+# The only line you change is client_id: paste the Client ID of the app you created in the Shopify Dev Dashboard
+# (run ./set-client-id.sh <your Client ID>, or edit the line by hand). Do not change anything else: Rotation's
+# server only works with exactly these addresses, permissions and webhooks. See README.md.
+client_id = "PASTE_YOUR_CLIENT_ID_HERE"
+name = "Rotation Feed"
+application_url = "https://bridge.rotationfootwear.com/receiver"
+embedded = true
+
+[access_scopes]
+# Products: create Rotation's products in your store as drafts. Inventory: keep their stock up to date.
+# Locations: create the separate "Rotation" warehouse. Orders: see which Rotation products you sold
+# (order lines only; no customer names, addresses, emails or phone numbers are stored).
+scopes = "read_products,write_products,read_inventory,write_inventory,read_locations,write_locations,read_orders"
+use_legacy_install_flow = false
+
+[auth]
+redirect_urls = ["https://bridge.rotationfootwear.com/receiver"]
+
+[webhooks]
+api_version = "2026-10"
+
+[[webhooks.subscriptions]]
+topics = ["app/uninstalled", "orders/create", "orders/cancelled"]
+uri = "https://bridge.rotationfootwear.com/webhooks/receiver"
+
+[[webhooks.subscriptions]]
+compliance_topics = ["customers/data_request", "customers/redact", "shop/redact"]
+uri = "https://bridge.rotationfootwear.com/webhooks/receiver"
