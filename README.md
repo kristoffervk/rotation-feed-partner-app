@@ -172,7 +172,7 @@ Good to know about custom distribution (from Shopify's documentation): an app wi
    The app asks for **no customer access**. Rotation never stores your customers' names, addresses, emails or phone numbers.
 3. Click **Install**.
 
-**You should see** Rotation Feed in your Shopify admin's apps list. Shopify may open it right away. **Until Rotation has registered your app (steps G and H) it shows an error** (for example "This store isn't connected to Rotation yet" or "Your session expired"), or a blank page. That's expected: close it and continue with step G.
+**You should see** Rotation Feed in your Shopify admin's apps list. Shopify may open it right away. **Until Rotation has registered your app (steps G and H) it shows the message "This app is not connected to Rotation yet"** together with your app's Client ID. It can also show another error, or a blank page. That's expected: close it and continue with step G.
 
 ---
 
@@ -219,7 +219,7 @@ Rotation **never changes your own products**: for a product you confirm as the s
 | `set-client-id.sh: permission denied` | Run it as `sh set-client-id.sh YOUR_CLIENT_ID`. |
 | The install link doesn't work or says the store can't install it | Check the link was generated for **your** store's `.myshopify.com` address (step E). Log in to that store's admin first, then open the link again. You can generate a new link under **Manage custom install link**. If your organization has no Distribution card, install from the **Installs** card instead. |
 | The permission screen shows **more or fewer** permissions than in step F | Don't install. Your `shopify.app.toml` was probably changed, or the deploy didn't finish. Download the folder again (step A), set the Client ID (C), deploy (D) and try again. If it still differs, tell us what you see. |
-| The app opens blank, or shows "Your session expired", "isn't connected to Rotation yet" or "set up for a different store" | Before step H that's expected. Afterwards, ask us (step K) and tell us the exact message. |
+| The app opens blank, or shows "This app is not connected to Rotation yet", "Your session expired" or "set up for a different store" | Before step H that's expected: the first message just means we haven't registered your app yet. Afterwards, ask us (step K) and tell us the exact message. |
 
 ---
 
