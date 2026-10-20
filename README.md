@@ -1,6 +1,6 @@
 # Rotation Feed: set up your own app (partner guide)
 
-This folder lets you create **Rotation Feed**, the small Shopify app that brings Rotation's products and stock into **your** Shopify store. You create it in your own Shopify account, install it on your own store, and then send Rotation a few details so Rotation can connect it.
+This folder lets you create **Rotation Feed**, the small Shopify app that brings Rotation's products and stock into **your** Shopify store. You create it in your own Shopify account, install it on your own store, and connect it yourself with the partner code Rotation sent you.
 
 - There is **no program code** in this folder. It only holds the app's settings (`shopify.app.toml`). The app itself runs on Rotation's server at `bridge.rotationfootwear.com`.
 - You don't need to be a developer. You copy and paste a few commands, and click through the Shopify Dev Dashboard.
@@ -19,7 +19,7 @@ Screens and button names in Shopify change from time to time. Where this guide s
 | `shopify.app.toml` | The app's settings. You change **one** line (the Client ID); leave everything else as it is |
 | `set-client-id.sh` | A small helper that writes your Client ID into `shopify.app.toml` (macOS and Linux) |
 | `package.json` | Needed by the Shopify CLI to recognise the folder as an app. Nothing to install from it |
-| `PARTNER_DETAILS_TEMPLATE.md` | The list of details to send Rotation at the end |
+| `PARTNER_DETAILS_TEMPLATE.md` | Only if you have no partner code: the details to send Rotation (no secret) |
 | `.gitignore` | Keeps local files out of Git |
 
 ---
@@ -54,6 +54,7 @@ Tick each line before you continue.
    ```
    You should see a version number (for example `3.x.x` or higher).
    - macOS: if you get a permission error (`EACCES`), install it with Homebrew instead: `brew tap shopify/shopify` and then `brew install shopify-cli`.
+7. **Your partner code from Rotation** (in Rotation's email, it looks like `RT7K-92MX-4Q`). You enter it in the app at the end (step G).
 
 ---
 
@@ -152,7 +153,7 @@ Open your **Rotation Feed** app in the Dev Dashboard. What you see depends on th
 
 Good to know about custom distribution (from Shopify's documentation): an app with custom distribution installs on **one store**, or on several stores only if they all belong to **the same Shopify Plus organization**. If your store isn't accepted, check that you typed the `.myshopify.com` address of the store you own.
 
-**If you don't see a Distribution card** (your store's own organization): that's normal. You install the app directly in step F, from the **Installs** card. There is no install link to copy; in step G simply write "installed from the Installs card".
+**If you don't see a Distribution card** (your store's own organization): that's normal. You install the app directly in step F, from the **Installs** card. There is no install link to copy, and you don't need one: you connect with your partner code in step G.
 
 ---
 
@@ -160,47 +161,49 @@ Good to know about custom distribution (from Shopify's documentation): an app wi
 
 1. **With an install link:** open it in your browser while you're logged in to your store's admin.
    **Without one:** in the Dev Dashboard open the app and click **Install app** on the **Installs** card, then choose your store and click **Install**.
-2. Shopify shows the permissions the app asks for. In plain language:
+2. Shopify shows the permissions the app asks for. The standard app file (`shopify.app.toml`) is **stock-only**: all
+   Rotation does is add another warehouse. In plain language:
 
    | What Shopify shows (roughly) | Why Rotation needs it |
    |---|---|
-   | View and edit **products** | To add Rotation's products to your store **as drafts without a price** (you set prices and decide when to publish). |
+   | View **products** | To find Rotation's shoes among your products. Read only: nothing is changed (Shopify's permission covers your whole product list; Rotation stores only what matching needs, see PRIVACY.md). |
    | View and edit **inventory** | To keep the stock of Rotation's products up to date in the Rotation warehouse. |
    | View and edit **locations** | To create the separate **"Rotation"** warehouse, so Rotation's stock stays apart from yours. |
-   | View **orders** | To see **which Rotation products you sold** and how many (order lines only). |
 
-   The app asks for **no customer access**. Rotation never stores your customers' names, addresses, emails or phone numbers.
+   The app asks for **no order access and no customer access**, and cannot change your product titles, descriptions,
+   images, SEO or prices. The full explanation for you (and your lawyer) is in [PRIVACY.md](PRIVACY.md).
+   (Only if Rotation asked you to: `shopify.app.full.toml` is the full variant, which also creates Rotation's products
+   as drafts and reads order lines. Deploy it with `shopify app deploy --config full` after putting your Client ID in it.)
 3. Click **Install**.
 
-**You should see** Rotation Feed in your Shopify admin's apps list. Shopify may open it right away. **Until Rotation has registered your app (steps G and H) it shows the message "This app is not connected to Rotation yet"** together with your app's Client ID. It can also show another error, or a blank page. That's expected: close it and continue with step G.
+**You should see** Rotation Feed in your Shopify admin's apps list. Shopify may open it right away. **Until you connect it (step G) it shows "This app is not connected to Rotation yet"**, with a form for your partner code and the app's Client secret. That's expected: continue with step G.
 
 ---
 
-## G. Send Rotation your details (2 minutes)
+## G. Connect the app with your partner code (2 minutes)
 
-Fill in [`PARTNER_DETAILS_TEMPLATE.md`](PARTNER_DETAILS_TEMPLATE.md) and send it to Rotation. You need:
+You need the **partner code** Rotation sent you (it looks like `RT7K-92MX-4Q`) and your app's **Client secret**.
 
-1. Your store's address: `your-store.myshopify.com`
-2. The **install link** from step E (or "installed from the Installs card")
-3. The **Client ID** (Dev Dashboard > Rotation Feed > **Settings**)
-4. The **Client secret** (same page; you may have to click a button to reveal or copy it)
+1. In your Shopify admin open **Apps** > **Rotation Feed**. It says **"This app is not connected to Rotation yet"**.
+2. **Partner code:** type the code from Rotation's message. Capitals, spaces and dashes don't matter.
+3. **Client secret:** in the Dev Dashboard open **Rotation Feed** > **Settings** and copy the **Client secret** (you may have to click a button to reveal or copy it). Paste it into the app.
+4. Click **Connect**.
 
-**The Client secret is a password. Handle it like one.**
-- Send it **only privately**: a direct message to your Rotation contact (for example a Discord DM), or a one-time link from a password manager.
-- **Never** post it in a shared or public channel, a group chat, an email thread with other people, a screenshot, or in this folder or any Git repository.
-- If you think it leaked, rotate it in the Dev Dashboard (on the app's Settings page; the exact wording may differ slightly) and send Rotation the new one privately. The old one stops working, so the app pauses until Rotation has the new one.
+**You should see** the next setup step (where Rotation's stock should go). Your app is now registered with Rotation: **there is nothing to send Rotation**, no Client ID, no secret, no install link.
 
-The Client ID and the install link are not secret.
+**About the Client secret.** It is a password. You only ever paste it into the Rotation Feed app itself, which checks it against your app (the app proves it is really yours) and stores it encrypted. It is never shown again, and Rotation staff never need it by chat or email. **Never** post it in a chat, an email, a screenshot, this folder or any Git repository. If you think it leaked, rotate it in the Dev Dashboard (on the app's Settings page; the exact wording may differ slightly) and email Rotation (step K): the app pauses until Rotation stores the new one.
+
+**"That didn't work"?** Check the code (it works once, until the date in Rotation's message, and only on the store Rotation made it for, if they named one) and that you copied the **Client secret** of **this** app, not the Client ID. After 5 wrong tries the form locks for 15 minutes. A code that has expired or was used: ask Rotation for a new one.
+
+**Fallback (only if Rotation asks for it):** no partner code? Send Rotation the **Client ID** shown on the same screen (and in Dev Dashboard > Settings). The Client ID is not secret. Use [`PARTNER_DETAILS_TEMPLATE.md`](PARTNER_DETAILS_TEMPLATE.md). Rotation then sends you a partner code, and you connect as above.
 
 ---
 
 ## H. What happens next
 
-1. Rotation registers your app and tells you when it's done.
-2. Open **Rotation Feed** in your Shopify admin (**Apps** > **Rotation Feed**).
-3. The app asks where Rotation's stock should go. Keep the suggestion **Create a new warehouse "Rotation"**: it keeps Rotation's stock apart from your own.
-4. The app looks for Rotation products **you already sell**, so you don't get duplicates. Check the matches under **Your products** (sure matches can be confirmed in one click).
-5. Rotation's other products appear under **Products** as **drafts without a price**. You choose prices and when to publish.
+1. Right after **Connect** the app asks where Rotation's stock should go. Keep the suggestion **Create a new warehouse "Rotation"**: it keeps Rotation's stock apart from your own.
+2. The app looks for Rotation products **you already sell**, so you don't get duplicates. Check the matches under **Your products** (sure matches can be confirmed in one click).
+3. Rotation's other products appear under **Products** as **drafts without a price**. You choose prices and when to publish.
 
 Rotation **never changes your own products**: for a product you confirm as the same shoe, only the stock in the Rotation warehouse is updated. Your titles, photos, prices and publishing stay yours.
 
@@ -234,4 +237,4 @@ Rotation **never changes your own products**: for a product you confirm as the s
 
 ## K. Support
 
-Email **kristoffer@rotation.no**. Say which step you're on and paste the exact message you see. **Never include the Client secret in an email**: we'll ask for it privately if we need it.
+Email **kristoffer@rotation.no**. Say which step you're on and paste the exact message you see. **Never include the Client secret in an email**: Rotation never needs it from you; you only paste it into the app itself (step G).

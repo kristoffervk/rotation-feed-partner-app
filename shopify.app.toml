@@ -11,10 +11,11 @@ application_url = "https://bridge.rotationfootwear.com/receiver"
 embedded = true
 
 [access_scopes]
-# Products: create Rotation's products in your store as drafts. Inventory: keep their stock up to date.
-# Locations: create the separate "Rotation" warehouse. Orders: see which Rotation products you sold
-# (order lines only; no customer names, addresses, emails or phone numbers are stored).
-scopes = "read_products,write_products,read_inventory,write_inventory,read_locations,write_locations,read_orders"
+# STOCK-ONLY (the default, least privilege): Rotation only adds another warehouse. Products: READ only, to find
+# Rotation's shoes among your products (nothing is ever changed). Inventory: keep the stock of the "Rotation"
+# warehouse up to date. Locations: create that separate warehouse. No orders, no customers. See PRIVACY.md.
+# (shopify.app.full.toml is the full variant that also creates drafts and reads order lines; only on request.)
+scopes = "read_products,read_inventory,write_inventory,read_locations,write_locations"
 use_legacy_install_flow = false
 
 [auth]
@@ -24,7 +25,7 @@ redirect_urls = ["https://bridge.rotationfootwear.com/receiver"]
 api_version = "2026-10"
 
 [[webhooks.subscriptions]]
-topics = ["app/uninstalled", "orders/create", "orders/cancelled"]
+topics = ["app/uninstalled", "inventory_levels/update"]
 uri = "https://bridge.rotationfootwear.com/webhooks/receiver"
 
 [[webhooks.subscriptions]]
